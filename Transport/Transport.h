@@ -28,8 +28,8 @@ static const byte STOPPED = 1;
 static const byte RECORDING = 2; 
 
 // These are used in _direction
-static const byte FORWARD = 11
-static const byte REVERSED = 12; 
+static const byte FORWARD = 11;
+static const byte REVERSE = 12; 
 
 // These are used in _data_state
 static const byte EMPTY = 21; 
