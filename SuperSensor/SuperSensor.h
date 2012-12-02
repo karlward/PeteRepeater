@@ -27,14 +27,15 @@ class SuperSensor {
   public:
     SuperSensor(int pin);
     int read();
+    int mean(); 
   private:
     int _pin;
     int _value; 
-    int _average; 
+    int _mean; 
     int _values_count;
     int _values[10]; 
     void _update(); 
-    int _average_values();
+    int _mean_values();
 };
 
 #endif

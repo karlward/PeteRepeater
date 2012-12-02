@@ -30,8 +30,12 @@ SuperSensor::SuperSensor(int pin) {
 int SuperSensor::read() {
   _value = analogRead(_pin); 
   _update(); 
-  _average_values();
-  return(_average_values()); 
+  _mean_values(); 
+  return(_value); 
+}
+
+int SuperSensor::mean() { 
+  return(_mean); 
 }
 
 void SuperSensor::_update() { 
@@ -42,14 +46,15 @@ void SuperSensor::_update() {
   if (_values_count < 10) { 
     _values_count++; 
   }
+  _mean_values(); 
 }
 
-int SuperSensor::_average_values() { 
+int SuperSensor::_mean_values() { 
   int sum = 0;
   for (int i=0; i < _values_count; i++) { 
     sum = sum + _values[i]; 
   }
-  _average = (int) (sum / _values_count); 
-  return(_average); 
+  _mean = (int) (sum / _values_count); 
+  return(_mean); 
 }
 
