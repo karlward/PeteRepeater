@@ -1,0 +1,16 @@
+PeteRepeater 
+Copyright 2012 Jon Wasserman and Karl Ward
+
+(see file COPYING for more details on software licensing)
+
+The code uses the Arduino MIDI Library from Francois Best:  
+- https://github.com/FortySevenEffects/arduino_midi_library
+- http://www.arduino.cc/playground/Main/MIDILibrary
+
+We definitely consulted some ITP PhysComp MIDI example code:  
+- http://itp.nyu.edu/physcomp/Labs/MIDIOutput
+
+Tom Igoe was exceedingly helpful throughout.  
+
+Louise Foo and Natasha Dzurny showed us that our wires were backward, and 
+made fun of us, and we appreciated it. 
