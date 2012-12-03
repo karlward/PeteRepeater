@@ -38,19 +38,21 @@ void setup() {
 } 
 
 void loop() { 
-  int f = forward.read();
+  int f = forward.read(); // the actual value of the sensor
+  int f_mean = forward.mean(); // the mean value of the sensor 
   delay(30);
-  int r = reverse.read();
-  delay(30);  
+  //int r = reverse.read();
+  //delay(30);  
 
   // 10K resistor has analogRead value 53
-  if (f > 43 && f < 63 && r < 10) { // piece in forward
+  //if (f > 43 && f < 63 && r < 10) { // piece in forward
+  if (f_mean > 43) { 
     MIDI.sendNoteOn(RECORD, velocity, CHANNEL);
   }
-  else if (r > 43 && r < 63 && f < 10) { // piece in backward
-    MIDI.sendNoteOn(REVERSE, velocity, CHANNEL);
-    MIDI.sendNoteOn(RECORD, velocity, CHANNEL);    
-  } 
+  //else if (r > 43 && r < 63 && f < 10) { // piece in backward
+  //  MIDI.sendNoteOn(REVERSE, velocity, CHANNEL);
+  //  MIDI.sendNoteOn(RECORD, velocity, CHANNEL);    
+  //} 
   else { // piece not in
     MIDI.sendNoteOn(STOP, velocity, CHANNEL);
   }
