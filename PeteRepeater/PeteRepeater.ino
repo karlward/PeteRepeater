@@ -18,23 +18,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <MIDI.h>
+#include <SoftwareSerial.h> // keep the hardware serial port free for debugging
+#include <MIDI.h> // use MIDI library to send notes, instead of writing MIDI manually
 #include "SuperSensor.h" // must be installed in Arduino libraries folder
 #include "Transport.h" // must be installed in Arduino libraries
+
+SoftwareSerial soft_serial(10,11); // RX pin is 10, TX pin is 11
+// redefine MIDI serial port from hardware to a SoftwareSerial port
+#define USE_SERIAL_PORT soft_serial // originally defined in MIDI.h
 
 byte note; 
 byte velocity = 100; 
 const byte CHANNEL = 1; 
-const byte RECORD_CMD = 1;
-const byte STOP_CMD = 2;
-const byte REVERSE_CMD = 3;
+const byte RECORD_CMD = 1; // send MIDI note 1 to send record command to looper
+const byte STOP_CMD = 2; // send MIDI note 2 to send stop command to looper
+const byte REVERSE_CMD = 3; // send MIDI note 3 to send reverse command to looper
 
 SuperSensor forward(A0); // data related to forward sensor
-SuperSensor reverse(A1); // data related to reverse sensor
+//SuperSensor reverse(A1); // data related to reverse sensor
 Transport looper; // keeps track of the state of the looper 
 
 void setup() { 
-  MIDI.begin(CHANNEL); 
+  Serial.begin(9600); // initialize hardware serial port for debugging
+  MIDI.begin(CHANNEL); // initialize soft_serial for MIDI communication
   MIDI.setInputChannel(MIDI_CHANNEL_OFF); 
   MIDI.turnThruOff(); 
 } 
@@ -42,6 +48,10 @@ void setup() {
 void loop() { 
   int f = forward.read(); // the actual value of the sensor
   int f_mean = forward.mean(); // the mean value of the sensor 
+  Serial.print("forward sensor val = ");
+  Serial.print(f); 
+  Serial.print(", mean = "); 
+  Serial.println(f_mean);  
   delay(30);
   //int r = reverse.read();
   //delay(30);  
@@ -52,6 +62,7 @@ void loop() {
     // start recording on the looper 
     if (looper.record() == TRANSITION) { // was not recording, so send record command
       MIDI.sendNoteOn(RECORD_CMD, velocity, CHANNEL);
+      Serial.println("setting looper to record"); 
     } 
   }
   //else if (r > 43 && r < 63 && f < 10) { // piece in backward
@@ -62,6 +73,7 @@ void loop() {
     // stop the looper
     if (looper.stop() == TRANSITION) { // was not stopped, so send stop command
       MIDI.sendNoteOn(STOP_CMD, velocity, CHANNEL);
+      Serial.println("setting looper to stop");
     } 
   }
 }
