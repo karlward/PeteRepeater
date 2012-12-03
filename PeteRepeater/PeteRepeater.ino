@@ -20,13 +20,14 @@
 
 #include <MIDI.h>
 #include "SuperSensor.h" // must be installed in Arduino libraries folder
+#include "Transport.h" // must be installed in Arduino libraries
 
 byte note; 
 byte velocity = 100; 
 const byte CHANNEL = 1; 
-const byte RECORD = 1;
-const byte STOP = 2;
-const byte REVERSE = 3;
+const byte RECORD_CMD = 1;
+const byte STOP_CMD = 2;
+const byte REVERSE_CMD = 3;
 
 SuperSensor forward(A0); // data related to forward sensor
 SuperSensor reverse(A1); // data related to reverse sensor
@@ -50,17 +51,17 @@ void loop() {
   if (f_mean > 43) { 
     // start recording on the looper 
     if (looper.record() == TRANSITION) { // was not recording, so send record command
-      MIDI.sendNoteOn(RECORD, velocity, CHANNEL);
+      MIDI.sendNoteOn(RECORD_CMD, velocity, CHANNEL);
     } 
   }
   //else if (r > 43 && r < 63 && f < 10) { // piece in backward
-  //  MIDI.sendNoteOn(REVERSE, velocity, CHANNEL);
-  //  MIDI.sendNoteOn(RECORD, velocity, CHANNEL);    
+  //  MIDI.sendNoteOn(REVERSE_CMD, velocity, CHANNEL);
+  //  MIDI.sendNoteOn(RECORD_CMD, velocity, CHANNEL);    
   //} 
   else { // piece not in
     // stop the looper
     if (looper.stop() == TRANSITION) { // was not stopped, so send stop command
-      MIDI.sendNoteOn(STOP, velocity, CHANNEL);
+      MIDI.sendNoteOn(STOP_CMD, velocity, CHANNEL);
     } 
   }
 }
