@@ -30,6 +30,7 @@ const byte REVERSE = 3;
 
 SuperSensor forward(A0); // data related to forward sensor
 SuperSensor reverse(A1); // data related to reverse sensor
+Transport looper; // keeps track of the state of the looper 
 
 void setup() { 
   MIDI.begin(CHANNEL); 
@@ -47,13 +48,19 @@ void loop() {
   // 10K resistor has analogRead value 53
   //if (f > 43 && f < 63 && r < 10) { // piece in forward
   if (f_mean > 43) { 
-    MIDI.sendNoteOn(RECORD, velocity, CHANNEL);
+    // start recording on the looper 
+    if (looper.record() == TRANSITION) { // was not recording, so send record command
+      MIDI.sendNoteOn(RECORD, velocity, CHANNEL);
+    } 
   }
   //else if (r > 43 && r < 63 && f < 10) { // piece in backward
   //  MIDI.sendNoteOn(REVERSE, velocity, CHANNEL);
   //  MIDI.sendNoteOn(RECORD, velocity, CHANNEL);    
   //} 
   else { // piece not in
-    MIDI.sendNoteOn(STOP, velocity, CHANNEL);
+    // stop the looper
+    if (looper.stop() == TRANSITION) { // was not stopped, so send stop command
+      MIDI.sendNoteOn(STOP, velocity, CHANNEL);
+    } 
   }
 }
