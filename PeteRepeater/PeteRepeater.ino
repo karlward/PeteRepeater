@@ -21,14 +21,13 @@
 #include <SoftwareSerial.h> // keep the hardware serial port free for debugging
 #include <MIDI.h> // use MIDI library to send notes, instead of writing MIDI manually
 #include "SuperSensor.h" // must be installed in Arduino libraries folder
-#include "Transport.h" // must be installed in Arduino libraries
+#include "Transport.h" // must be installed in Arduino libraries folder
 
 SoftwareSerial soft_serial(10,11); // RX pin is 10, TX pin is 11
 // redefine MIDI serial port from hardware to a SoftwareSerial port
 #define USE_SERIAL_PORT soft_serial // originally defined in MIDI.h
 
-byte note; 
-byte velocity = 100; 
+byte velocity = 100; // all MIDI notes we send will have this arbitraty velocity (loudness)
 const byte CHANNEL = 1; 
 const byte RECORD_CMD = 1; // send MIDI note 1 to send record command to looper
 const byte STOP_CMD = 2; // send MIDI note 2 to send stop command to looper
