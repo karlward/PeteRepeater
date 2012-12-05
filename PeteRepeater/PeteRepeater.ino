@@ -29,7 +29,7 @@ const byte STOP_CMD = 2; // send MIDI note 2 to send stop command to looper
 const byte REVERSE_CMD = 3; // send MIDI note 3 to send reverse command to looper
 
 SuperSensor forward(A0); // data related to forward sensor
-//SuperSensor reverse(A1); // data related to reverse sensor
+SuperSensor reverse(A1); // data related to reverse sensor
 Transport looper; // keeps track of the state of the looper 
 
 void setup() { 
@@ -42,21 +42,30 @@ void loop() {
   int f = forward.read(); // the actual value of the sensor
   int f_mean = forward.mean(); // the mean value of the sensor 
   delay(30);
-  //int r = reverse.read();
-  //delay(30);  
+  int r = reverse.read();
+  delay(30);  
 
   // 10K resistor has analogRead value 53
   //if (f > 43 && f < 63 && r < 10) { // piece in forward
-  if (f_mean > 43) { 
+  if (f_mean > 5) { 
+    if (looper.direction() == REVERSE) { 
+      looper.forward(); 
+      MIDI.sendNoteOn(REVERSE_CMD, velocity, CHANNEL);
+    }
     // start recording on the looper 
-    if (looper.record() == TRANSITION) { // was not recording, so send record command
+    if (looper.record() == TRANSITION) { // was not recording, so send r
       MIDI.sendNoteOn((byte) RECORD_CMD, velocity, CHANNEL);
     } 
   }
-  //else if (r > 43 && r < 63 && f < 10) { // piece in backward
-  //  MIDI.sendNoteOn(REVERSE_CMD, velocity, CHANNEL);
-  //  MIDI.sendNoteOn(RECORD_CMD, velocity, CHANNEL);    
-  //} 
+  else if (r > 5) { // piece in backward
+    if (looper.direction() == FORWARD) { 
+      looper.reverse(); 
+      MIDI.sendNoteOn(REVERSE_CMD, velocity, CHANNEL);
+    }
+    if (looper.record() == TRANSITION) {
+      MIDI.sendNoteOn(RECORD_CMD, velocity, CHANNEL);    
+    }
+  } 
   else { // piece not in
     // stop the looper
     if (looper.stop() == TRANSITION) { // was not stopped, so send stop command
