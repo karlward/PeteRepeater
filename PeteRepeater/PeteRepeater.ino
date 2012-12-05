@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <MIDI.h> // use MIDI library to send notes, instead of writing MIDI manually
+// # include <MIDI.h> // use MIDI library to send notes, instead of writing MIDI manually
 #include "SuperSensor.h" // must be installed in Arduino libraries folder
 #include "Transport.h" // must be installed in Arduino libraries folder
 
@@ -27,15 +27,17 @@ const byte CHANNEL = 1;
 const byte RECORD_CMD = 1; // send MIDI note 1 to send record command to looper
 const byte STOP_CMD = 2; // send MIDI note 2 to send stop command to looper
 const byte REVERSE_CMD = 3; // send MIDI note 3 to send reverse command to looper
+const byte CLEAR_CMD = 4; // send MIDI note 4 to send clear command to looper
 
 SuperSensor forward(A0); // data related to forward sensor
 SuperSensor reverse(A1); // data related to reverse sensor
 Transport looper; // keeps track of the state of the looper 
 
 void setup() { 
-  MIDI.begin(CHANNEL); // initialize soft_serial for MIDI communication
-  MIDI.setInputChannel(MIDI_CHANNEL_OFF); 
-  MIDI.turnThruOff(); 
+  //MIDI.begin(CHANNEL); // initialize soft_serial for MIDI communication
+  begin(CHANNEL); 
+  //MIDI.setInputChannel(MIDI_CHANNEL_OFF); 
+  //MIDI.turnThruOff(); 
 } 
 
 void loop() { 
@@ -50,26 +52,44 @@ void loop() {
   if (f_mean > 5) { 
     if (looper.direction() == REVERSE) { 
       looper.forward(); 
-      MIDI.sendNoteOn(REVERSE_CMD, velocity, CHANNEL);
+      //MIDI.sendNoteOn(REVERSE_CMD, velocity, CHANNEL);
+      sendNoteOn(REVERSE_CMD, velocity, CHANNEL);
     }
     // start recording on the looper 
     if (looper.record() == TRANSITION) { // was not recording, so send r
-      MIDI.sendNoteOn((byte) RECORD_CMD, velocity, CHANNEL);
+      //MIDI.sendNoteOn((byte) RECORD_CMD, velocity, CHANNEL);
+      sendNoteOn((byte) RECORD_CMD, velocity, CHANNEL);
     } 
   }
   else if (r > 5) { // piece in backward
     if (looper.direction() == FORWARD) { 
       looper.reverse(); 
-      MIDI.sendNoteOn(REVERSE_CMD, velocity, CHANNEL);
+      //MIDI.sendNoteOn(REVERSE_CMD, velocity, CHANNEL);
+      sendNoteOn(REVERSE_CMD, velocity, CHANNEL);
     }
     if (looper.record() == TRANSITION) {
-      MIDI.sendNoteOn(RECORD_CMD, velocity, CHANNEL);    
+      //MIDI.sendNoteOn(RECORD_CMD, velocity, CHANNEL);    
+      sendNoteOn(RECORD_CMD, velocity, CHANNEL);    
     }
   } 
   else { // piece not in
     // stop the looper
     if (looper.stop() == TRANSITION) { // was not stopped, so send stop command
-      MIDI.sendNoteOn((byte) STOP_CMD, velocity, CHANNEL);
+      //MIDI.sendNoteOn((byte) STOP_CMD, velocity, CHANNEL);
+      sendNoteOn((byte) STOP_CMD, velocity, CHANNEL);
     } 
   }
 }
+
+void begin(byte channel) { 
+  Serial.begin(31250);
+} 
+
+void sendNoteOn(byte note, byte velocity, byte channel) { 
+
+   Serial.write(0x90); // channel 1
+   Serial.write(note); 
+   Serial.write(0x45); // velocity
+}
+
+
