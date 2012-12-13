@@ -20,3 +20,7 @@ There are CREDITS files for each major piece of the system:
   https://github.com/karlward/PeteRepeater/blob/master/PeteRepeater/CREDITS
   https://github.com/karlward/PeteRepeater/blob/master/SuperSensor/CREDITS
   https://github.com/karlward/PeteRepeater/blob/master/Transport/CREDITS
+
+You can also find blog posts related to Pete Repeater here: 
+
+  http://www.karlward.com/blog/category/pete-repeater/ 
