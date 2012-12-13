@@ -1,7 +1,8 @@
 PeteRepeater
 ============
 
-Pete and Repeat are sitting on a boat.  Pete jumps out of the boat
+Pete and Repeat are sitting on a boat.  Pete jumps out of the boat.  Who is 
+still in the boat?  
 
 PeteRepeater is a live audio looper with a novel physical interface for 
 control. 
